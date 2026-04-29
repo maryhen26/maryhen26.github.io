@@ -1,6 +1,167 @@
 ---
 title: "Mini Project 1"
-format: html
+format:
+  html:
+    code-fold: true
+    code-tools: true
 theme: flatly
 ---
 
+## Overview
+
+This project analyzes tweets from Donald Trump’s time in office using text mining, regular expressions, and sentiment analysis. The analysis focuses on common words, repeated phrases, emotional language, and changes in tweet style over time.
+
+## Setup
+
+```{r}
+#| include: FALSE
+
+library(tidyverse)
+library(tidytext)
+library(textdata)
+library(wordcloud)
+library(wordcloud2)
+library(viridis)
+library(ggthemes)
+library(gutenbergr)
+```
+
+```{r}
+#| include: false
+realDonaldTrump_in_office <- read.csv("~/Downloads/realDonaldTrump_in_office.csv")
+```
+
+```{r}
+#| include: false
+#regular expression, str, making data set able to do text analysis 
+#converted to lowercase, removed links, and common stopwords.
+great_stop_words <- stop_words|>
+  filter(word != "great")
+
+tidy_tweet <- realDonaldTrump_in_office |>
+  select(Time, Tweet.Text) |>
+  mutate(
+    line = row_number(),
+    Tweet.Text = str_to_lower(Tweet.Text),
+    Tweet.Text = str_remove_all(Tweet.Text, "https\\S+")) |> #regular expression 1, remove text with https with any nonwhitespace character after it
+  unnest_tokens(word, Tweet.Text) |>
+  filter(!word %in% c("rt", "amp", "trump", "realdonaldtrump")) |> #don't include these words
+  anti_join(great_stop_words, by = "word")
+```
+
+```{r}
+#| include: FALSE
+nrc_sentiments <- get_sentiments("nrc")
+bing_sentiments <- get_sentiments("bing")
+smart_stopwords <- get_stopwords(source = "smart")
+```
+
+```{r}
+#| include: false
+#Regular expressions
+realDonaldTrump_in_office |>
+  mutate(fake_word = str_extract(Tweet.Text, regex("\\bfake\\b", ignore_case = TRUE))) |>
+  count(fake_word)
+
+realDonaldTrump_in_office |>
+  mutate(fake_phrase = str_extract(Tweet.Text, regex("\\bfake\\s+\\w+", ignore_case = TRUE))) |> #regular expression 2, including the word fake with a word after it
+  count(fake_phrase, sort = TRUE) |>
+  slice_max(n, n = 15)
+```
+
+One word that frequently appears in Trump's tweets is "fake," typically used to criticize the media outlets or elections.
+
+
+```{r}
+tidy_tweet |>
+  anti_join(smart_stopwords, by = "word") |>
+  count(word, sort = TRUE) |>
+  slice_max(n, n = 20) |> 
+  ggplot(aes(fct_reorder(word, n), n)) +
+  geom_col() +
+  coord_flip() +
+    labs(
+    x = "Word",
+    y = "Frequency",
+    title = "Most Common Words in Trump's Tweets", 
+    subtitle = "Top 20 words after removing stopwords"
+  )
+```
+
+This is a horizontal bar chart displaying the 20 most common words in trump tweets. On the x axis is the number of times the word has appeared ranging from 0 to 3000, and on the y axis is the 15 most common words. Words are ordered by frequency, with the most frequent words appearing at the top. Most of the words center the U.S and politics, including words relating to issues like border, election, fake, news, and Biden.
+
+The most common words in Trump's tweets reveals the main topics typically involves politics, elections, and the media.
+
+```{r}
+
+#counting the frequency of specific sentiments, looking at most common words in anger sentiment.
+get_sentiments("nrc") |> 
+  filter(sentiment == "anger") |>
+  inner_join(tidy_tweet) |>
+  count(word, sort = TRUE) |>
+  slice_max(n, n = 10)
+```
+
+Looking at the frequency of words that is categorized in the "anger" sentiment. Many of these expressions of anger seem to relate to political controversies regarding elections or investigations.
+
+```{r}
+tidy_tweet |>
+  inner_join(bing_sentiments) |>
+  count(sentiment, word, sort = TRUE) |>
+  group_by(sentiment) |>
+  slice_max(n, n = 10) |>
+  ungroup() |>
+  ggplot(aes(x = fct_reorder(word, n), y = n, fill = sentiment)) +
+    geom_col() +  
+    coord_flip() +
+    facet_wrap(~ sentiment, scales = "free") +
+  labs(
+      title = "Most Common Positive and Negative Words in Trump's Tweets",
+      subtitle = "Top 10 words by frequency using the Bing sentiment lexicon",
+      x = "Word",
+      y = "Frequency",
+      fill = "Sentiment"
+    )
+```
+
+This faceted horizontal bar chart shows the top ten positive and negative words used in Trump’s tweets based on the Bing sentiment lexicon. The x-axis represents word frequency, ranging from 0 to about 1250 for negative words and up to around 3500 for positive words, while the y-axis lists words ordered from most to least frequent. The most common positive words include “great,” “win,” and “strong,” while the most frequent negative words include “fake,” “bad,” and “crime.” These patterns suggest that Trump’s tweets often rely on strongly evaluative language, praising allies or achievements while criticizing opponents. The prominence of the word “fake” also reinforces earlier findings that Trump frequently uses this term to challenge media coverage or political claims.
+
+
+```{r}
+realDonaldTrump_in_office |>
+  mutate(
+    all_caps = str_detect(Tweet.Text, "\\b[A-Z]{2,}\\b"), # 3rd regular expression, a word with two or more letters in all caps
+    date = as.Date(Time)
+  ) |>
+  count(date, all_caps) |>
+  ggplot(aes(date, n, color = all_caps)) +
+  geom_line() +
+  labs(
+    x = "Date",
+    y = "Number of Tweets",
+    title = "Use of ALL CAPS in Tweets Over Time"
+  )
+```
+This is a line plot showing the use of all caps over time. On the x axis is the date in years ranging from 2017 to 2021, and on the y axis is the number of tweets that had all caps in them. From 2017 to 2017 the number of tweets were lower with tweets including capital letters caps balanced with tweets without capital letters. After 2018 the use of all capital letters in tweets becomes more common, especially between 2019 and 2021 where a large majority of tweets included capital letters.
+
+Trump is known for his use of capitalized letters in tweets, and this pattern is more apparent over time, especially around the year 2020.
+
+```{r}
+tidy_tweet |>
+  inner_join(bing_sentiments, by = "word") |>
+  mutate(date = as.Date(Time)) |>
+  count(date, sentiment) |>
+  pivot_wider(names_from = sentiment, values_from = n, values_fill = 0) |>
+  mutate(sentiment = positive - negative) |>
+  ggplot(aes(date, sentiment)) +
+  geom_line() +
+  labs(
+    x = "Date",
+    y = "Sentiment",
+    title = "Daily Sentiment of Trump's Tweets"
+  )
+```
+
+This is a line plot showing the daily sentiment of Trump's tweets through the years 2017 - 2021. The date in years is on the x axis, and on the y axis is sentiment, ranging from negative (more negative than positive words in a day), to positive (more positive than negative words in a day). Between 2017 to 2018 the daily sentiment was neither negative or positive, but remained neutral and had little variation. After 2018, there is more variation in daily sentiment, especially 2020 - 2021 where there there are days where sentiment is extremely negative or positive.
+
+These two plots are particularly interesting when viewed together. As the use of all-capitalized words increases over time, the sentiment of Trump’s tweets also becomes more extreme, with larger swings between positive and negative language. This suggests that stylistic emphasis, such as writing in all caps, may accompany messages with stronger emotions. Combined with earlier findings suggest that Trump uses emotionally charged language to emphasize political messages.
