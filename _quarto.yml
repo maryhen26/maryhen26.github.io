@@ -9,14 +9,16 @@ website:
       - href: index.qmd
         text: Home
       - about.qmd
+      - MP1.qmd
 
 format:
   html:
     theme:
-      - cosmo
+      - flatly
       - brand
     css: styles.css
     toc: true
+    page-layout: full
 
 
 
