@@ -10,11 +10,22 @@ about:
 
 Hello! My name is Mary and I'm a senior majoring in psychology and concentrating in statistics & data science and race & ethnic studies at St. Olaf College. This quarto website is for my Data Science 2 project!
 
-![Michelangelo's David](media/David.jpeg)
 
-I saw the David when I went to Italy during a J term abroad! He is very large
+## Fun Pictures!
 
-![My cat Bernie](media/Bernie.jpeg)
+::: {.columns style="gap: 3rem;"}
 
+::: {.column}
+![Michelangelo's David](media/David.jpeg){width=100%}
 
-This is my cat Bernie! He is also quite large
+*I saw the David when I went to Italy during a J-term abroad! He is very large, about 17 ft tall!*
+:::
+
+::: {.column}
+![My cat Bernie](media/Bernie.jpeg){width=100%}
+
+*My cat Bernie! He's 5 years old and also quite large.*
+:::
+
+:::
+
