@@ -57,7 +57,12 @@ smart_stopwords <- get_stopwords(source = "smart")
 ```
 
 ```{r}
-#| include: false
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-width: 8
+#| fig-height: 5
+
 #Regular expressions
 realDonaldTrump_in_office |>
   mutate(fake_word = str_extract(Tweet.Text, regex("\\bfake\\b", ignore_case = TRUE))) |>
@@ -73,6 +78,12 @@ One word that frequently appears in Trump's tweets is "fake," typically used to 
 
 
 ```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-width: 8
+#| fig-height: 5
+
 tidy_tweet |>
   anti_join(smart_stopwords, by = "word") |>
   count(word, sort = TRUE) |>
@@ -93,6 +104,9 @@ This is a horizontal bar chart displaying the 20 most common words in trump twee
 The most common words in Trump's tweets reveals the main topics typically involves politics, elections, and the media.
 
 ```{r}
+#| echo: false
+#| message: false
+#| warning: false
 
 #counting the frequency of specific sentiments, looking at most common words in anger sentiment.
 get_sentiments("nrc") |> 
@@ -105,6 +119,12 @@ get_sentiments("nrc") |>
 Looking at the frequency of words that is categorized in the "anger" sentiment. Many of these expressions of anger seem to relate to political controversies regarding elections or investigations.
 
 ```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-width: 8
+#| fig-height: 5
+
 tidy_tweet |>
   inner_join(bing_sentiments) |>
   count(sentiment, word, sort = TRUE) |>
@@ -130,6 +150,12 @@ This faceted horizontal bar chart shows the top ten positive and negative words 
 ## Tweets Through Time
 
 ```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-width: 8
+#| fig-height: 5
+
 realDonaldTrump_in_office |>
   mutate(
     all_caps = str_detect(Tweet.Text, "\\b[A-Z]{2,}\\b"), # 3rd regular expression, a word with two or more letters in all caps
@@ -149,6 +175,12 @@ This is a line plot showing the use of all caps over time. On the x axis is the 
 Trump is known for his use of capitalized letters in tweets, and this pattern is more apparent over time, especially around the year 2020.
 
 ```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-width: 8
+#| fig-height: 5
+
 tidy_tweet |>
   inner_join(bing_sentiments, by = "word") |>
   mutate(date = as.Date(Time)) |>
