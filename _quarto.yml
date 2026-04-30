@@ -8,8 +8,8 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - about.qmd
       - MP1.qmd
+      - Census_Data.qmd
 
 format:
   html:

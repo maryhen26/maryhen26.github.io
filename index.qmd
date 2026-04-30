@@ -8,9 +8,13 @@ about:
   image-width: 17em
 ---
 
-Hello! My name is Mary and I'm currently in Data Science 2. <https://quarto.org/docs/websites>.
+Hello! My name is Mary and I'm a senior majoring in psychology and concentrating in statistics & data science and race & ethnic studies at St. Olaf College. This quarto website is for my Data Science 2 project!
 
-```{r}
-1 + 1
-```
+![Michelangelo's David](media/David.jpeg)
 
+I saw the David when I went to Italy during a J term abroad! He is very large
+
+![My cat Bernie](media/Bernie.jpeg)
+
+
+This is my cat Bernie! He is also quite large

@@ -11,7 +11,7 @@ theme: flatly
 
 This project analyzes tweets from Donald Trump’s time in office using text mining, regular expressions, and sentiment analysis. The analysis focuses on common words, repeated phrases, emotional language, and changes in tweet style over time.
 
-## Setup
+## Exploratory Data Analysis
 
 ```{r}
 #| include: FALSE
@@ -126,6 +126,8 @@ tidy_tweet |>
 
 This faceted horizontal bar chart shows the top ten positive and negative words used in Trump’s tweets based on the Bing sentiment lexicon. The x-axis represents word frequency, ranging from 0 to about 1250 for negative words and up to around 3500 for positive words, while the y-axis lists words ordered from most to least frequent. The most common positive words include “great,” “win,” and “strong,” while the most frequent negative words include “fake,” “bad,” and “crime.” These patterns suggest that Trump’s tweets often rely on strongly evaluative language, praising allies or achievements while criticizing opponents. The prominence of the word “fake” also reinforces earlier findings that Trump frequently uses this term to challenge media coverage or political claims.
 
+
+## Tweets Through Time
 
 ```{r}
 realDonaldTrump_in_office |>

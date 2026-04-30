@@ -132,12 +132,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
-<span class="menu-text">About</span></a>
-  </li>  
-  <li class="nav-item">
     <a class="nav-link active" href="./MP1.html" aria-current="page"> 
 <span class="menu-text">Mini Project 1</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./Census_Data.html"> 
+<span class="menu-text">Choropleth Maps</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -156,7 +156,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
-  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">Setup</a></li>
+  <li><a href="#exploratory-data-analysis" id="toc-exploratory-data-analysis" class="nav-link" data-scroll-target="#exploratory-data-analysis">Exploratory Data Analysis</a></li>
+  <li><a href="#tweets-through-time" id="toc-tweets-through-time" class="nav-link" data-scroll-target="#tweets-through-time">Tweets Through Time</a></li>
   </ul>
 </nav>
     </div>
@@ -186,8 +187,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="overview">Overview</h2>
 <p>This project analyzes tweets from Donald Trump’s time in office using text mining, regular expressions, and sentiment analysis. The analysis focuses on common words, repeated phrases, emotional language, and changes in tweet style over time.</p>
 </section>
-<section id="setup" class="level2">
-<h2 class="anchored" data-anchor-id="setup">Setup</h2>
+<section id="exploratory-data-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="exploratory-data-analysis">Exploratory Data Analysis</h2>
 <p>One word that frequently appears in Trump’s tweets is “fake,” typically used to criticize the media outlets or elections.</p>
 <div class="cell">
 <details class="code-fold">
@@ -279,6 +280,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>This faceted horizontal bar chart shows the top ten positive and negative words used in Trump’s tweets based on the Bing sentiment lexicon. The x-axis represents word frequency, ranging from 0 to about 1250 for negative words and up to around 3500 for positive words, while the y-axis lists words ordered from most to least frequent. The most common positive words include “great,” “win,” and “strong,” while the most frequent negative words include “fake,” “bad,” and “crime.” These patterns suggest that Trump’s tweets often rely on strongly evaluative language, praising allies or achievements while criticizing opponents. The prominence of the word “fake” also reinforces earlier findings that Trump frequently uses this term to challenge media coverage or political claims.</p>
+</section>
+<section id="tweets-through-time" class="level2">
+<h2 class="anchored" data-anchor-id="tweets-through-time">Tweets Through Time</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -804,7 +808,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>This project analyzes tweets from Donald Trump’s time in office using text mining, regular expressions, and sentiment analysis. The analysis focuses on common words, repeated phrases, emotional language, and changes in tweet style over time.</span>
 <span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="fu">## Setup</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exploratory Data Analysis</span></span>
 <span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: FALSE</span></span>
@@ -919,44 +923,46 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-142"><a href="#cb9-142" aria-hidden="true" tabindex="-1"></a>This faceted horizontal bar chart shows the top ten positive and negative words used in Trump’s tweets based on the Bing sentiment lexicon. The x-axis represents word frequency, ranging from 0 to about 1250 for negative words and up to around 3500 for positive words, while the y-axis lists words ordered from most to least frequent. The most common positive words include “great,” “win,” and “strong,” while the most frequent negative words include “fake,” “bad,” and “crime.” These patterns suggest that Trump’s tweets often rely on strongly evaluative language, praising allies or achievements while criticizing opponents. The prominence of the word “fake” also reinforces earlier findings that Trump frequently uses this term to challenge media coverage or political claims.</span>
 <span id="cb9-143"><a href="#cb9-143" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-144"><a href="#cb9-144" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-147"><a href="#cb9-147" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb9-148"><a href="#cb9-148" aria-hidden="true" tabindex="-1"></a>realDonaldTrump_in_office <span class="sc">|&gt;</span></span>
-<span id="cb9-149"><a href="#cb9-149" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb9-150"><a href="#cb9-150" aria-hidden="true" tabindex="-1"></a>    <span class="at">all_caps =</span> <span class="fu">str_detect</span>(Tweet.Text, <span class="st">"</span><span class="sc">\\</span><span class="st">b[A-Z]{2,}</span><span class="sc">\\</span><span class="st">b"</span>), <span class="co"># 3rd regular expression, a word with two or more letters in all caps</span></span>
-<span id="cb9-151"><a href="#cb9-151" aria-hidden="true" tabindex="-1"></a>    <span class="at">date =</span> <span class="fu">as.Date</span>(Time)</span>
-<span id="cb9-152"><a href="#cb9-152" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb9-153"><a href="#cb9-153" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(date, all_caps) <span class="sc">|&gt;</span></span>
-<span id="cb9-154"><a href="#cb9-154" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(date, n, <span class="at">color =</span> all_caps)) <span class="sc">+</span></span>
-<span id="cb9-155"><a href="#cb9-155" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb9-156"><a href="#cb9-156" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb9-157"><a href="#cb9-157" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Date"</span>,</span>
-<span id="cb9-158"><a href="#cb9-158" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Number of Tweets"</span>,</span>
-<span id="cb9-159"><a href="#cb9-159" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Use of ALL CAPS in Tweets Over Time"</span></span>
-<span id="cb9-160"><a href="#cb9-160" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb9-161"><a href="#cb9-161" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-162"><a href="#cb9-162" aria-hidden="true" tabindex="-1"></a>This is a line plot showing the use of all caps over time. On the x axis is the date in years ranging from 2017 to 2021, and on the y axis is the number of tweets that had all caps in them. From 2017 to 2017 the number of tweets were lower with tweets including capital letters caps balanced with tweets without capital letters. After 2018 the use of all capital letters in tweets becomes more common, especially between 2019 and 2021 where a large majority of tweets included capital letters.</span>
-<span id="cb9-163"><a href="#cb9-163" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-164"><a href="#cb9-164" aria-hidden="true" tabindex="-1"></a>Trump is known for his use of capitalized letters in tweets, and this pattern is more apparent over time, especially around the year 2020.</span>
+<span id="cb9-145"><a href="#cb9-145" aria-hidden="true" tabindex="-1"></a><span class="fu">## Tweets Through Time</span></span>
+<span id="cb9-146"><a href="#cb9-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-149"><a href="#cb9-149" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-150"><a href="#cb9-150" aria-hidden="true" tabindex="-1"></a>realDonaldTrump_in_office <span class="sc">|&gt;</span></span>
+<span id="cb9-151"><a href="#cb9-151" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb9-152"><a href="#cb9-152" aria-hidden="true" tabindex="-1"></a>    <span class="at">all_caps =</span> <span class="fu">str_detect</span>(Tweet.Text, <span class="st">"</span><span class="sc">\\</span><span class="st">b[A-Z]{2,}</span><span class="sc">\\</span><span class="st">b"</span>), <span class="co"># 3rd regular expression, a word with two or more letters in all caps</span></span>
+<span id="cb9-153"><a href="#cb9-153" aria-hidden="true" tabindex="-1"></a>    <span class="at">date =</span> <span class="fu">as.Date</span>(Time)</span>
+<span id="cb9-154"><a href="#cb9-154" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb9-155"><a href="#cb9-155" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(date, all_caps) <span class="sc">|&gt;</span></span>
+<span id="cb9-156"><a href="#cb9-156" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(date, n, <span class="at">color =</span> all_caps)) <span class="sc">+</span></span>
+<span id="cb9-157"><a href="#cb9-157" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb9-158"><a href="#cb9-158" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb9-159"><a href="#cb9-159" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Date"</span>,</span>
+<span id="cb9-160"><a href="#cb9-160" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Number of Tweets"</span>,</span>
+<span id="cb9-161"><a href="#cb9-161" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Use of ALL CAPS in Tweets Over Time"</span></span>
+<span id="cb9-162"><a href="#cb9-162" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb9-163"><a href="#cb9-163" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-164"><a href="#cb9-164" aria-hidden="true" tabindex="-1"></a>This is a line plot showing the use of all caps over time. On the x axis is the date in years ranging from 2017 to 2021, and on the y axis is the number of tweets that had all caps in them. From 2017 to 2017 the number of tweets were lower with tweets including capital letters caps balanced with tweets without capital letters. After 2018 the use of all capital letters in tweets becomes more common, especially between 2019 and 2021 where a large majority of tweets included capital letters.</span>
 <span id="cb9-165"><a href="#cb9-165" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-168"><a href="#cb9-168" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb9-169"><a href="#cb9-169" aria-hidden="true" tabindex="-1"></a>tidy_tweet <span class="sc">|&gt;</span></span>
-<span id="cb9-170"><a href="#cb9-170" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(bing_sentiments, <span class="at">by =</span> <span class="st">"word"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb9-171"><a href="#cb9-171" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">as.Date</span>(Time)) <span class="sc">|&gt;</span></span>
-<span id="cb9-172"><a href="#cb9-172" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(date, sentiment) <span class="sc">|&gt;</span></span>
-<span id="cb9-173"><a href="#cb9-173" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> sentiment, <span class="at">values_from =</span> n, <span class="at">values_fill =</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
-<span id="cb9-174"><a href="#cb9-174" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">sentiment =</span> positive <span class="sc">-</span> negative) <span class="sc">|&gt;</span></span>
-<span id="cb9-175"><a href="#cb9-175" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(date, sentiment)) <span class="sc">+</span></span>
-<span id="cb9-176"><a href="#cb9-176" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb9-177"><a href="#cb9-177" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb9-178"><a href="#cb9-178" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Date"</span>,</span>
-<span id="cb9-179"><a href="#cb9-179" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Sentiment"</span>,</span>
-<span id="cb9-180"><a href="#cb9-180" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Daily Sentiment of Trump's Tweets"</span></span>
-<span id="cb9-181"><a href="#cb9-181" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb9-182"><a href="#cb9-182" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-183"><a href="#cb9-183" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-184"><a href="#cb9-184" aria-hidden="true" tabindex="-1"></a>This is a line plot showing the daily sentiment of Trump's tweets through the years 2017 - 2021. The date in years is on the x axis, and on the y axis is sentiment, ranging from negative (more negative than positive words in a day), to positive (more positive than negative words in a day). Between 2017 to 2018 the daily sentiment was neither negative or positive, but remained neutral and had little variation. After 2018, there is more variation in daily sentiment, especially 2020 - 2021 where there there are days where sentiment is extremely negative or positive.</span>
+<span id="cb9-166"><a href="#cb9-166" aria-hidden="true" tabindex="-1"></a>Trump is known for his use of capitalized letters in tweets, and this pattern is more apparent over time, especially around the year 2020.</span>
+<span id="cb9-167"><a href="#cb9-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-170"><a href="#cb9-170" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-171"><a href="#cb9-171" aria-hidden="true" tabindex="-1"></a>tidy_tweet <span class="sc">|&gt;</span></span>
+<span id="cb9-172"><a href="#cb9-172" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(bing_sentiments, <span class="at">by =</span> <span class="st">"word"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb9-173"><a href="#cb9-173" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">as.Date</span>(Time)) <span class="sc">|&gt;</span></span>
+<span id="cb9-174"><a href="#cb9-174" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(date, sentiment) <span class="sc">|&gt;</span></span>
+<span id="cb9-175"><a href="#cb9-175" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> sentiment, <span class="at">values_from =</span> n, <span class="at">values_fill =</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
+<span id="cb9-176"><a href="#cb9-176" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">sentiment =</span> positive <span class="sc">-</span> negative) <span class="sc">|&gt;</span></span>
+<span id="cb9-177"><a href="#cb9-177" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(date, sentiment)) <span class="sc">+</span></span>
+<span id="cb9-178"><a href="#cb9-178" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb9-179"><a href="#cb9-179" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb9-180"><a href="#cb9-180" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Date"</span>,</span>
+<span id="cb9-181"><a href="#cb9-181" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Sentiment"</span>,</span>
+<span id="cb9-182"><a href="#cb9-182" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Daily Sentiment of Trump's Tweets"</span></span>
+<span id="cb9-183"><a href="#cb9-183" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb9-184"><a href="#cb9-184" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb9-185"><a href="#cb9-185" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-186"><a href="#cb9-186" aria-hidden="true" tabindex="-1"></a>These two plots are particularly interesting when viewed together. As the use of all-capitalized words increases over time, the sentiment of Trump’s tweets also becomes more extreme, with larger swings between positive and negative language. This suggests that stylistic emphasis, such as writing in all caps, may accompany messages with stronger emotions. Combined with earlier findings suggest that Trump uses emotionally charged language to emphasize political messages.</span>
+<span id="cb9-186"><a href="#cb9-186" aria-hidden="true" tabindex="-1"></a>This is a line plot showing the daily sentiment of Trump's tweets through the years 2017 - 2021. The date in years is on the x axis, and on the y axis is sentiment, ranging from negative (more negative than positive words in a day), to positive (more positive than negative words in a day). Between 2017 to 2018 the daily sentiment was neither negative or positive, but remained neutral and had little variation. After 2018, there is more variation in daily sentiment, especially 2020 - 2021 where there there are days where sentiment is extremely negative or positive.</span>
+<span id="cb9-187"><a href="#cb9-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-188"><a href="#cb9-188" aria-hidden="true" tabindex="-1"></a>These two plots are particularly interesting when viewed together. As the use of all-capitalized words increases over time, the sentiment of Trump’s tweets also becomes more extreme, with larger swings between positive and negative language. This suggests that stylistic emphasis, such as writing in all caps, may accompany messages with stronger emotions. Combined with earlier findings suggest that Trump uses emotionally charged language to emphasize political messages.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

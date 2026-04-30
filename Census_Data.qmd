@@ -1,0 +1,217 @@
+---
+title: "Choropleth Maps"
+format:
+  html:
+    code-fold: true
+    code-tools: true
+theme: flatly
+editor_options: 
+  chunk_output_type: console
+---
+
+## Overview
+
+This page maps state-level educational attainment using data from the U.S. Census Bureau ACS 2024 S1501 Educational Attainment table. I focus on the percent of adults age 25 and older with a bachelor’s degree or higher.
+
+
+```{r}
+#| include: false
+library(mdsr)
+library(maps)
+library(sf)
+library(janitor)
+library(leaflet)
+library(viridis)
+library(htmltools)
+library(glue)
+library(tidyverse)
+library(readr)
+```
+
+```{r}
+#| include: false
+acs <- read_csv("~/Downloads/census_ed.csv") |>
+  clean_names()
+
+acs <- acs |>
+  select(-contains("margin_of_error"))
+```
+
+
+```{r}
+#| include: false
+acs_raw <- acs |>
+  filter(state != "geographic area name", 
+         state != "united states") |>
+  select(
+    state,
+    bachelors_pct = estimate_percent_age_by_educational_attainment_population_25_years_and_over_bachelors_degree_or_higher
+  ) |>
+  mutate(
+    bachelors_pct = as.numeric(bachelors_pct),
+    state = str_to_lower(state),
+    state = str_squish(state),
+    edu_category = cut(
+      bachelors_pct,
+      breaks = c(0, 30, 40, 50, Inf),
+      labels = c("Under 30%", "30–39.9%", "40–49.9%", "50%+")
+    )
+  )
+```
+
+
+```{r}
+#| include: false
+states_polygon <- map_data("state")
+
+states_static <- states_polygon |>
+  left_join(acs_raw, by = c("region" = "state"))
+
+states_static |>
+  distinct(region, bachelors_pct) |>
+  count(is.na(bachelors_pct))
+
+
+states_sf <- read_sf("https://rstudio.github.io/leaflet/json/us-states.geojson") |>
+  mutate(name = str_to_lower(name))
+
+states_interactive <- states_sf |>
+  left_join(acs_raw, by = c("name" = "state"))
+
+states_interactive |>
+  st_drop_geometry() |>
+  count(is.na(bachelors_pct))
+```
+
+## Data Sources
+
+Data come from the [U.S. Census Bureau ACS 2024 S1501 Educational Attainment table](https://data.census.gov/table/ACSST1Y2024.S1501). Static map boundaries come from the `maps` package, and interactive boundaries come from the [Leaflet US states GeoJSON file](https://rstudio.github.io/leaflet/json/us-states.geojson).
+
+## Numeric Variable: Bachelor’s Degree Attainment
+
+### Static Choropleth Map
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+ggplot(states_static, aes(long, lat, group = group, fill = bachelors_pct)) +
+  geom_polygon(color = "white", linewidth = 0.2) +
+  coord_map() +
+  scale_fill_viridis_c(name = "% Bachelor’s\nor higher") +
+  labs(
+    title = "Bachelor’s Degree Attainment by State",
+    subtitle = "Percent of population age 25+ with a bachelor’s degree or higher",
+    caption = "Data: U.S. Census Bureau, 2024 ACS S1501; Map: maps package",
+    x = NULL,
+    y = NULL
+  ) +
+  theme_void()
+```
+
+### Interactive Choropleth Map
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+pal_num <- colorNumeric("viridis", domain = states_interactive$bachelors_pct)
+
+states_interactive <- states_interactive |>
+  mutate(
+    label_num = glue(
+      "<strong>{str_to_title(name)}</strong><br/>",
+      "Bachelor’s degree or higher: {round(bachelors_pct, 1)}%<br/>",
+      "<em>Data: 2024 ACS S1501</em>"
+    )
+  )
+
+leaflet(states_interactive) |>
+  setView(-96, 37.8, 4) |>
+  addTiles() |>
+  addPolygons(
+    fillColor = ~pal_num(bachelors_pct),
+    color = "white",
+    weight = 1,
+    fillOpacity = 0.8,
+    label = lapply(states_interactive$label_num, HTML)
+  ) |>
+  addLegend(
+    pal = pal_num,
+    values = ~bachelors_pct,
+    title = "% Bachelor’s or higher",
+    position = "bottomright"
+  )
+```
+
+These maps shows how bachelor’s degree attainment varies across states. Darker states have higher percentages of adults age 25 and older with a bachelor’s degree or higher. The map helps reveal regional differences in educational attainment, showing that in general higher bachelor's degree attainment is seen in the northeast and west coast, and lower bachelor's degree attainment is seen in the southeast. West Virginia has the lowest amount of bachelor degrees at 24.4%, and Massachusetts is the sate with the highest amount of bachelor degrees at 48.3% of adults age 25 and older with a bachelor's degree or higher.
+
+## Categorical Variable: Education Attainment Categories
+
+### Static Choropleth Map
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+ggplot(states_static, aes(long, lat, group = group, fill = edu_category)) +
+  geom_polygon(color = "white", linewidth = 0.2) +
+  coord_map() +
+  scale_fill_brewer(
+    palette = "PRGn",
+    name = "Education category",
+    na.value = "gray90"
+  ) +
+  labs(
+    title = "Bachelor’s Degree Attainment Categories by State",
+    subtitle = "States grouped by percent of adults age 25+ with a bachelor’s degree or higher",
+    caption = "Data: U.S. Census Bureau, 2024 ACS S1501; Map: maps package",
+    x = NULL,
+    y = NULL
+  ) +
+  theme_void()
+```
+
+
+### Interactive Choropleth Map
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+pal_cat <- colorFactor("PRGn", domain = states_interactive$edu_category)
+
+states_interactive <- states_interactive |>
+  mutate(
+    label_cat = glue(
+      "<strong>{str_to_title(name)}</strong><br/>",
+      "Education category: {edu_category}<br/>",
+      "Bachelor’s degree or higher: {round(bachelors_pct, 1)}%<br/>",
+      "<em>Data: 2024 ACS S1501</em>"
+    )
+  )
+
+leaflet(states_interactive) |>
+  setView(-96, 37.8, 4) |>
+  addTiles() |>
+  addPolygons(
+    fillColor = ~pal_cat(edu_category),
+    color = "white",
+    weight = 1,
+    fillOpacity = 0.8,
+    label = lapply(states_interactive$label_cat, HTML)
+  ) |>
+  addLegend(
+    pal = pal_cat,
+    values = ~edu_category,
+    title = "Education category",
+    position = "bottomright"
+  )
+```
+
+These maps groups states into broader education categories based on the percent of adults age 25 and older with a bachelor’s degree or higher. Compared with the numeric map, the categorical version makes larger regional patterns easier to see because it emphasizes broad group differences rather than small percentage-point changes. In general, higher bachelor's degree attainment is seen in the northeast of the United States, as well as Washington and Colorado. Bachelor's degree attainment under 30% is generally seen in the southeast region, as well as Nevada, Kentucky, and West Virginia.
+
