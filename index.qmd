@@ -22,7 +22,7 @@ Hello! My name is Mary and I'm a senior majoring in psychology and concentrating
 :::
 
 ::: {.column}
-![My cat Bernie](media/Bernie.jpeg){width=100%}
+![Bernie](media/Bernie.jpeg){width=100%}
 
 *My cat Bernie! He's 5 years old and also quite large.*
 :::
